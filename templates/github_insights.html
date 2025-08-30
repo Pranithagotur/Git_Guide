@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitHub Insights</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-blue-50 text-gray-800">
+  <div class="max-w-5xl mx-auto p-6">
+    <a href="/dashboard" class="inline-block mb-4 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">&larr; Back to Dashboard</a>
+
+    <h1 class="text-3xl font-bold text-blue-600">🚀 GitHub Insights</h1>
+    <p class="text-xl mt-2">GitHub Score: <span id="score" class="text-blue-500">Loading...</span></p>
+
+    <!-- Profile Info -->
+    <div class="flex items-center space-x-4 mt-6">
+      <img id="avatar" class="w-20 h-20 rounded-full border" src="" alt="avatar">
+      <div>
+        <p id="name" class="text-xl font-semibold">Username</p>
+        <p id="stats">Repos: 0 | Followers: 0</p>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+      <div>
+        <h2 class="text-lg font-bold mb-2">Language Usage</h2>
+        <canvas id="languageChart"></canvas>
+      </div>
+      <div>
+        <h2 class="text-lg font-bold mb-2">Commit Activity</h2>
+        <canvas id="commitChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Top Projects -->
+    <h2 class="text-xl font-bold mt-6">Top Projects</h2>
+    <ul id="top-projects" class="mt-2">
+      <!-- JS will populate -->
+    </ul>
+
+    <!-- AI Recommendations -->
+    <h2 class="text-xl font-bold mt-6">AI Recommendations</h2>
+    <ul id="ai-feedback" class="list-disc ml-6 mt-2">
+      <!-- JS will populate -->
+    </ul>
+  </div>
+
+  <script>
+    fetch("/api/github_insights")
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("score").textContent = `${data.github_score}/100`;
+        document.getElementById("name").textContent = data.profile.name || data.profile.login;
+        document.getElementById("avatar").src = data.profile.avatar_url;
+        document.getElementById("stats").textContent = `Repos: ${data.profile.public_repos} | Followers: ${data.profile.followers}`;
+
+        // Language Pie Chart
+        const langs = Object.entries(data.languages);
+        new Chart(document.getElementById("languageChart"), {
+          type: 'pie',
+          data: {
+            labels: langs.map(([lang]) => lang),
+            datasets: [{
+              data: langs.map(([_, count]) => count),
+              backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+            }]
+          }
+        });
+
+        // Commit Bar Chart
+        const commits = Object.entries(data.commits);
+        new Chart(document.getElementById("commitChart"), {
+          type: 'bar',
+          data: {
+            labels: commits.map(([date]) => date),
+            datasets: [{
+              label: 'Commits per Day',
+              data: commits.map(([_, count]) => count),
+              backgroundColor: '#36A2EB'
+            }]
+          },
+          options: {
+            scales: {
+              y: { beginAtZero: true }
+            }
+          }
+        });
+
+        // Top Projects
+        const projectsEl = document.getElementById("top-projects");
+        data.top_repos.forEach(repo => {
+          const li = document.createElement("li");
+          li.innerHTML = `<a href="${repo.html_url}" class="text-blue-500 underline" target="_blank">${repo.name}</a> – ⭐ ${repo.stargazers_count} | 🍴 ${repo.forks_count}`;
+          projectsEl.appendChild(li);
+        });
+
+        // AI Recommendations
+        const feedbackEl = document.getElementById("ai-feedback");
+        data.recommendations.forEach(item => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          feedbackEl.appendChild(li);
+        });
+      });
+  </script>
+</body>
+</html>

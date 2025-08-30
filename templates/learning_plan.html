@@ -1,0 +1,17 @@
+<h2 class="text-xl font-bold mb-2">🧠 4-Week Learning Plan</h2>
+<button onclick="getLearningPlan()" class="bg-green-500 text-white px-4 py-2 rounded">Generate Plan</button>
+<div id="plan-output" class="mt-4 whitespace-pre-line p-4 bg-gray-50 border rounded"></div>
+
+<script>
+async function getLearningPlan() {
+  const res = await fetch('/api/learning-plan');
+  const data = await res.json();
+  const plan = data.plan;
+
+  document.getElementById("plan-output").innerText = plan;
+
+  // Optional: voice output
+  const utterance = new SpeechSynthesisUtterance(plan);
+  speechSynthesis.speak(utterance);
+}
+</script>

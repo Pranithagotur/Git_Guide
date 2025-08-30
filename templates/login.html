@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GitGrade</title>
+
+  <!-- Embedded CSS -->
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background-color: #e3f2fd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+    }
+
+    .card {
+      background: #ffffff;
+      padding: 30px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .title {
+      background-color: #00bfff;
+      color: white;
+      padding: 10px 0;
+      margin-bottom: 20px;
+      border-radius: 8px;
+    }
+
+    form {
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 500;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .primary-btn {
+      width: 100%;
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #0077ff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .secondary-btn {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #eeeeee;
+      color: black;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .divider {
+      margin: 20px 0;
+      font-size: 14px;
+      color: #888;
+    }
+
+    .note {
+      font-size: 12px;
+      color: #666;
+      margin-top: 15px;
+    }
+
+    .footer-link {
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    .footer-link a {
+      text-decoration: none;
+      color: #0077ff;
+    }
+
+    .footer-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1 class="title">PrepScore</h1>
+      <h2>Welcome to PrepScore</h2>
+      <p>Let's evaluate your coding profile.</p>
+<form action="/submit" method="POST">
+  <label for="github">GitHub Username</label>
+  <input type="text" id="github" name="github" placeholder="e.g., octocat" required>
+
+  <label for="leetcode">LeetCode Username (Optional)</label>
+  <input type="text" id="leetcode" name="leetcode" placeholder="e.g., your_leetcode_id">
+
+ <label for="codeforces">Codeforces Username (Optional)</label>
+<input type="text" id="codeforces" name="codeforces" placeholder="e.g., your_Codeforces_id">
+
+  <button type="submit" class="primary-btn">→ Proceed to Dashboard</button>
+</form>
+
+
+      <p class="footer-link">Don't have an account? <a href="#">Learn More</a></p>
+    </div>
+  </div>
+</body>
+</html>

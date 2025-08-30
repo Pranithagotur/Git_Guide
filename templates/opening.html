@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrepScore - Evaluate Your Coding</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='opening.css') }}">
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    </head>
+<body>
+    <header class="navbar">
+        <div class="container">
+            <div class="logo">PrepScore</div>
+            <nav class="nav-links">
+                <a href="#" class="sign-in-btn" onclick="goToNextPage()">Sign In</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Is Your Coding Profile Job-Ready?</h1>
+                <p>GitGrade instantly analyzes your GitHub and LeetCode profiles, giving you a clear score and actionable insights to impress recruiters.</p>
+                <button class="cta-button" onclick="goToNextPage()">Start Your Evaluation <span class="arrow-icon">&#8594;</span></button>
+            </div>
+        </section>
+
+        <!-- <section class="placeholder-section">
+            <div class="container">
+                <div class="placeholder-box">
+                    <span>1200 &times; 675</span>
+                </div>
+            </div>
+        </section> -->
+
+        <section class="features-section">
+            <div class="container">
+                <h2>Why PrepScore?</h2>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <img src="static/bargraph.png" alt="Instant Profile Score Icon">
+                        <h3>Instant Profile Score</h3>
+                        <p>Get a clear, quantifiable measure of your profile strength across GitHub and coding platforms.</p>
+                    </div>
+                    <div class="feature-item">
+                        <img src="static/git.png" alt="Actionable GitHub Insights Icon">
+                        <h3>Actionable GitHub Insights</h3>
+                        <p>Understand your repository activity, commit patterns, and project quality with targeted AI tips.</p>
+                    </div>
+                    <div class="feature-item">
+                        <img src="static/ai.png" alt="Personalized AI Coaching Icon">
+                        <h3>Personalized AI Coaching</h3>
+                        <p>Receive custom recommendations to improve, predict your placement readiness, and find best-fit companies.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 GitGrade. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function goToNextPage() {
+            // 'about.html' is the name of the file in the same folder
+            window.location.href = "{{ url_for('login')}}";
+        }
+    </script>
+</body>
+</html>

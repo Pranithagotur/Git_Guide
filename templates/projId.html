@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <title>GitProEval • AI Coach</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body{font-family:'Open Sans',sans-serif;background:#f5f9fc;padding:60px;text-align:center;color:#023860;}
+    input,textarea{width:300px;padding:10px;border:1px solid #ccc;border-radius:6px;margin:6px 0;}
+    button{padding:10px 22px;background:#023860;color:#fff;border:none;border-radius:6px;cursor:pointer;}
+    #output{max-width:900px;margin:40px auto;text-align:left;}
+    .idea,.resource,.week{background:#fff;border:1px solid #d4e1ea;border-radius:10px;padding:18px;margin-bottom:16px;}
+    .idea h3{margin:0 0 6px;}
+    ul{margin-left:18px}
+  </style>
+</head>
+<body>
+
+<h1>🚀 AI Coach – Get Project Ideas & Roadmap</h1>
+
+<label>Skill gaps (comma separated)</label><br>
+<input id="gaps" placeholder="React, Machine Learning"><br>
+<label>Strengths (comma separated)</label><br>
+<input id="strengths" placeholder="Python, SQL"><br>
+<label>Interests (comma separated)</label><br>
+<input id="interests" placeholder="movies, finance"><br>
+<button id="goBtn"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Plan</button>
+<p id="status"></p>
+
+<div id="output"></div>
+
+<script>
+const goBtn=document.getElementById('goBtn');
+goBtn.onclick = async ()=>{
+  const gaps=document.getElementById('gaps').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const strengths=document.getElementById('strengths').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const interests=document.getElementById('interests').value.split(',').map(s=>s.trim()).filter(Boolean);
+
+  document.getElementById('status').textContent='Generating...';
+  goBtn.disabled=true;
+
+  const res = await fetch('/ai-plan',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({skill_gaps:gaps,strengths:strengths,interests:interests})
+  });
+  const data = await res.json();
+  console.log("📥 Received data from server:", data); 
+  render(data);
+if (data.error) {
+  document.getElementById('status').textContent = "❌ Error: " + data.pyerror;
+  return;
+}
+render(data);
+
+  goBtn.disabled=false;
+  document.getElementById('status').textContent='';
+};
+
+function render(data){
+  const box = document.getElementById('output');
+  box.innerHTML = '';
+
+  // Projects
+  data.ideas.forEach(p => {
+    box.innerHTML += `<div class="idea">
+      <h3>${p.title}</h3>
+      <b>Stack:</b> ${p.stack.join(', ')}<br>
+      <b>Features:</b><ul>${p.features.map(f => `<li>${f}</li>`).join('')}</ul>
+      <p>${p.blurb}</p>
+    </div>`;
+  });
+
+  // Resources
+  box.innerHTML += '<h2>📚 Resources</h2>';
+  data.resources.forEach(r => {
+    box.innerHTML += `<div class="resource"><a href="${r.url}" target="_blank">${r.title}</a></div>`;
+  });
+
+  // Roadmap
+  box.innerHTML += '<h2>🗓 4‑Week Roadmap</h2>';
+  data.roadmap.forEach((w, i) => {
+    box.innerHTML += `<div class="week"><b>Week ${i + 1}:</b> ${w}</div>`;
+  });
+}
+
+</script>
+</body>
+</html>

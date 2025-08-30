@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GitHub Profile Insight</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js -->
+</head>
+<body class="bg-blue-50 min-h-screen flex font-sans">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-blue-900 text-white flex flex-col p-4">
+    <h1 class="text-2xl font-bold mb-6">PrepScore</h1>
+    <nav class="flex-1 space-y-3">
+      <a href="#" class="block py-2 px-3 bg-blue-700 rounded">Summary</a>
+      <a href="/github_insights" class="block px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded">GitHub Insights</a>
+ <a href="/leetcode_profile" class="block px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded">Coding Profile</a>
+      <a href="/dashboard/ai-coach" class="block py-2 px-3 bg-blue-700 rounded text-white">AI Coach</a>
+<a href="{{ url_for('project_ideas') }}" class="block px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded">
+    💡ProjectI
+</a>
+ <a href="{{ url_for('daily_questions_page') }}" class="block px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded">
+    🗓️ Your Daily LeetCode Questions
+</a>
+    </nav>
+    <div class="mt-8 border-t pt-4">
+      <div class="flex items-center gap-2">
+        <div class="w-10 h-10 bg-green-300 rounded-full"></div>
+        <div>
+          <p class="font-semibold" id="user-display">username</p>
+          <p class="text-sm">Student User</p>
+        </div>
+      </div>
+     <a href="{{ url_for('logout') }}" class="mt-4 block w-full py-2 bg-black text-white text-center rounded">Log out</a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-8 overflow-auto">
+    <h2 class="text-2xl font-bold text-gray-800">Good Afternoon, <span class="text-blue-700" id="user-greeting">username</span>!</h2>
+    <p class="text-gray-600 mt-1 mb-6">Here's a quick snapshot of your coding profile strength.</p>
+
+    <div class="bg-blue-100 border border-blue-300 rounded-lg p-4 text-blue-800 mb-6">
+      <p class="font-semibold">Welcome to GitGrade!</p>
+         <p>Username: {{ codeforces }}</p>
+      <p>Explore your detailed insights and AI-powered recommendations to supercharge your placement readiness.<br>
+        <span class="font-medium text-blue-600">Consider setting up a GITHUB_TOKEN in your .env for full API access.</span>
+      </p>
+    </div>
+
+    <!-- Score Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div class="bg-white p-6 rounded-lg shadow">
+        <h3 class="text-gray-700 font-semibold text-lg">🏅 Overall Score</h3>
+        <p class="text-4xl font-bold text-blue-600 mt-2">
+          <span id="overall-score">--</span><sup class="text-lg font-normal text-gray-500"></sup>
+        </p>
+        <p class="text-sm text-gray-500 mt-1">Your combined profile strength.</p>
+        <h2 id="overallScore">--</h2>
+
+      </div>
+
+      <div class="bg-white p-6 rounded-lg shadow">
+        <h3 class="text-gray-700 font-semibold text-lg">🐙 GitHub Score</h3>
+        <p class="text-4xl font-bold text-blue-600 mt-2">
+          <span id="github-score">--</span><sup class="text-lg font-normal text-gray-500"></sup>
+        </p>
+        <p class="text-sm text-gray-500 mt-1">Based on your repository activity.</p>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg shadow">
+        <h3 class="text-gray-700 font-semibold text-lg">💻 LeetCode Score</h3>
+        <p class="text-4xl font-bold text-green-600 mt-2">
+          <span id="leetcode-score">--</span><sup class="text-lg font-normal text-gray-500"></sup>
+        </p>
+        <p class="text-sm text-gray-500 mt-1">From your problem-solving skills.</p>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-white p-6 rounded-lg shadow mb-6">
+      <h4 class="text-lg font-semibold text-gray-800 mb-4">⚡ Quick Actions</h4>
+      <div class="flex flex-col md:flex-row gap-4">
+        <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">🔍 View GitHub Details</button>
+        <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">📊 Analyze Coding Profile</button>
+        <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">🤖 Get AI Coaching</button>
+      </div>
+    </div>
+    <!-- AI Suggestions Section -->
+<div class="bg-white rounded shadow p-6 mb-6 mt-6">
+  <h2 class="text-xl font-semibold mb-4 text-gray-800">🧠 Personalized AI Suggestions</h2>
+
+  <div class="mb-4">
+    <h3 class="text-lg font-medium text-gray-700">📈 Predicted Placement Readiness</h3>
+    <p class="text-4xl font-bold text-blue-600" id="readiness">--%</p>
+    <p class="text-sm text-gray-500">AI-estimated readiness based on your profile data.</p>
+  </div>
+
+  <ul id="suggestionsList" class="space-y-2">
+    <!-- suggestions will be injected here -->
+  </ul>
+</div>
+
+
+   <!-- GitHub Insights Section -->
+<div id="github-insights-section" style="display: none;" class="p-6 bg-white rounded-xl shadow mt-6">
+  <h2 class="text-xl font-bold mb-4 text-gray-800">📘 GitHub Insights</h2>
+
+
+  <!-- GitHub Score -->
+  <div class="mb-6">
+    <h3 class="text-lg font-semibold text-gray-700 mb-2">GitHub Score</h3>
+    <p class="text-2xl font-bold text-blue-600" id="githubScore">Loading...</p>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div>
+      <h3 class="font-semibold text-gray-700 mb-2">Language Usage</h3>
+      <canvas id="languageChart" width="300" height="300"></canvas>
+    </div>
+    <div>
+      <h3 class="font-semibold text-gray-700 mb-2">Commit Activity</h3>
+      <canvas id="commitChart" width="400" height="300"></canvas>
+    </div>
+  </div>
+
+  <!-- Recommendations -->
+  <div class="mt-4">
+    <h3 class="text-lg font-bold mt-4 mb-2 text-gray-800">AI Recommendations</h3>
+    <ul id="recommendations" class="list-disc ml-6 text-gray-800"></ul>
+  </div>
+</div>
+
+  </main>
+
+  <!-- Script to Load Scores -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const username = "{{ username }}";
+      document.getElementById("user-display").textContent = username;
+      document.getElementById("user-greeting").textContent = username;
+
+      fetch(`/api/summary?username=${username}`)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById("overall-score").innerText = data.overall_score;
+          document.getElementById("github-score").innerText = data.github_score;
+          document.getElementById("leetcode-score").innerText = data.leetcode_score;
+        })
+        .catch(err => console.error("Failed to fetch summary:", err));
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+  fetch("/api/summary")
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("github-score").textContent = `${data.github_score}/100`;
+      document.getElementById("leetcode-score").textContent = `${data.leetcode_score}/100`;
+      document.getElementById("overall-score").textContent = `${data.total_score}/100`;
+    });
+});
+
+
+    function showGitHubInsights() {
+      document.getElementById('github-insights-section').style.display = 'block';
+
+      fetch('/api/github-insights')
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            document.getElementById('github-summary').innerHTML = `<p>${data.error}</p>`;
+            return;
+          }
+
+          const profile = data.profile;
+          document.getElementById('github-summary').innerHTML = `
+            <img src="${profile.avatar_url}" width="100" class="rounded mb-2"/>
+            <p><strong>${profile.name}</strong></p>
+            <p>Repositories: ${profile.repos}, Followers: ${profile.followers}, Last Active: ${profile.last_active}</p>
+          `;
+
+          document.getElementById('github-projects').innerHTML = `<h3 class="font-semibold text-gray-700 mb-2">Top Projects</h3>` + data.top_projects.map(p => `
+            <div class="mb-2 border p-2 rounded bg-white shadow-sm">
+              <a href="${p.url}" target="_blank" class="text-blue-700 font-semibold">${p.name}</a>
+              <p>${p.description}</p>
+              <p>⭐ ${p.stars}, 🍴 ${p.forks}, 🧑‍💻 ${p.language}</p>
+            </div>
+          `).join("");
+
+          document.getElementById('github-languages').innerHTML = `<h3 class="font-semibold text-gray-700 mb-2">Languages Used</h3><ul>` +
+            Object.entries(data.languages).map(([lang, count]) => `<li>${lang}: ${count}</li>`).join("") + `</ul>`;
+
+          document.getElementById('github-recommendations').innerHTML = `<h3 class="font-semibold text-gray-700 mb-2">Recommendations</h3><ul>` +
+            data.recommendations.map(r => `<li>${r}</li>`).join("") + `</ul>`;
+
+          // Charts
+          const langLabels = Object.keys(data.languages);
+          const langCounts = Object.values(data.languages);
+
+          const langCtx = document.getElementById('languageChart').getContext('2d');
+          if (window.languageChart) window.languageChart.destroy();
+          window.languageChart = new Chart(langCtx, {
+            type: 'pie',
+            data: {
+              labels: langLabels,
+              datasets: [{
+                label: 'Languages',
+                data: langCounts,
+                backgroundColor: ['#4dc9f6', '#f67019', '#f53794', '#537bc4', '#acc236', '#166a8f', '#00a950']
+              }]
+            }
+          });
+
+          const activityLabels = Object.keys(data.activity).sort();
+          const activityCounts = activityLabels.map(date => data.activity[date]);
+
+          const activityCtx = document.getElementById('activityChart').getContext('2d');
+          if (window.activityChart) window.activityChart.destroy();
+          window.activityChart = new Chart(activityCtx, {
+            type: 'bar',
+            data: {
+              labels: activityLabels,
+              datasets: [{
+                label: 'Commits per Day',
+                data: activityCounts,
+                backgroundColor: '#537bc4'
+              }]
+            },
+            options: {
+              scales: {
+                x: {
+                  ticks: {   
+                    maxRotation: 45,
+                    minRotation: 45
+                  }
+                }
+              }
+            }
+          });
+        });
+       document.addEventListener("DOMContentLoaded", function () {
+    const leetcodeUsername = "{{ leetcode }}";
+
+    if (!leetcodeUsername) {
+      document.getElementById("daily-questions").innerHTML =
+        "<li class='text-red-500'>LeetCode username not found.</li>";
+      return;
+    }
+
+    fetch(`/api/daily?username=${leetcodeUsername}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const questions = data.daily_questions || [];
+        const ul = document.getElementById("daily-questions");
+
+        if (questions.length === 0) {
+          ul.innerHTML = "<li>No questions available.</li>";
+          return;
+        }
+
+        questions.forEach((q) => {
+          const li = document.createElement("li");
+          li.innerHTML = `<a href="${q.link}" target="_blank">${q.title}</a> <span class="text-sm text-gray-500">(${q.difficulty})</span>`;
+          ul.appendChild(li);
+        });
+      })
+      .catch((err) => {
+        document.getElementById("daily-questions").innerHTML =
+          "<li class='text-red-500'>Failed to load questions.</li>";
+        console.error(err);
+      });
+  });
+const username = document.getElementById("codeforcesUsername").value;
+fetch(`/api/profile?username=${username}`)
+  .then(res => res.json())
+  .then(data => console.log(data));
+
+
+window.onload = function () {
+  fetch("/api/ai_coach")
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("github-score").textContent = data.github + "/100";
+      document.getElementById("leetcode-score").textContent = data.leetcode + "/100";
+      document.getElementById("hackerrank-score").textContent = data.hackerrank + "/100";
+      document.getElementById("readiness").textContent = data.readiness + "%";
+
+      if (data.suggestions) {
+        document.getElementById("suggestionsList").innerHTML = data.suggestions
+          .split('\n')
+          .map(s => `<li>${s.trim()}</li>`)
+          .join('');
+      } else {
+        document.getElementById("suggestionsList").innerHTML = "<li>No suggestions available.</li>";
+      }
+    })
+    .catch(err => console.error("❌ Failed to fetch AI coach suggestions:", err));
+}
+    }
+  </script>
+
+</body>
+</html>

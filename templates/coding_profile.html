@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ user.username if user else 'LeetCode Insights' }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #f0f8ff;
+            padding: 2rem;
+        }
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .profile img {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+        }
+        .progress-bar-container {
+            background: #eee;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 24px;
+            margin-top: 8px;
+        }
+        .progress-bar {
+            height: 100%;
+            background: #4caf50;
+            text-align: center;
+            color: white;
+            line-height: 24px;
+        }
+        .tracker {
+            margin-top: 2rem;
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .tracker ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .tracker li {
+            margin: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 6px;
+        }
+        .tracker li span {
+            color: #888;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+
+{% if user %}
+<div class="profile">
+    <img src="{{ user.avatar or '/static/default-avatar.png' }}" alt="Avatar">
+    <div>
+        <h2>{{ user.realName or "Anonymous" }} ({{ user.username }})</h2>
+        <p>🏆 Rank: {{ user.ranking }}</p>
+        <p>⭐ Reputation: {{ user.reputation }}</p>
+        <div class="progress-bar-container">
+            <div class="progress-bar" style="width: {{ user.score }}%;">{{ user.score }} / 100</div>
+        </div>
+    </div>
+</div>
+
+<h3>Problem Solving</h3>
+<div style="max-width: 350px; margin: auto;">
+    <canvas id="difficultyChart"></canvas>
+</div>
+
+<h3>AI Recommendation</h3>
+<p style="background:#fff;padding:15px;border-radius:10px;box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+  {{ user.ai_recommendation }}
+</p>
+
+<h3>Weekly Tracker</h3>
+<div class="tracker">
+    <ul>
+        {% for submission in user.recent %}
+        <li>{{ submission.title }} <span>{{ submission.timestamp | datetimeformat }}</span></li>
+        {% else %}
+        <li>No recent submissions available.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script>
+    const ctx = document.getElementById('difficultyChart');
+    const solvedData = {{ [user.solved.easy, user.solved.medium, user.solved.hard] | tojson }};
+
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Easy', 'Medium', 'Hard'],
+            datasets: [{
+                label: 'Problems Solved',
+                data: solvedData,
+                backgroundColor: ['#66bb6a', '#ffa726', '#ef5350'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top'
+                }
+            }
+        }
+    });
+</script>
+
+{% else %}
+<p>No user data available.</p>
+{% endif %}
+
+</body>
+</html>

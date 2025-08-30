@@ -1,0 +1,207 @@
+/* Basic Reset & Typography */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif; /* Adjust font as needed */
+    line-height: 1.6;
+    color: #333;
+     background-color: #fff;
+}
+
+.container {
+    max-width: 1200px; /* Or a similar width to match the image content area */
+    margin: 0 auto;
+    padding: 0 20px;
+    
+
+}
+
+/* Navbar */
+.navbar {
+     background-color: #e3f2fd;
+    padding: 15px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between; /* Center the content */
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar .logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: #4CAF50; /* Green color for logo */
+}
+
+.navbar .sign-in-btn {
+    text-decoration: none;
+    color: #666;
+    font-weight: 600;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.navbar .sign-in-btn:hover {
+    background-color: #eee;
+}
+
+
+
+/* Hero Section */
+.hero-section {
+    text-align: center;
+    padding: 80px 0; /* Adjust padding as needed */
+    background-color: #e3f2fd;
+/* White background */
+   /* margin-top: 20px; /* Space from navbar */
+    border-radius: 10px; /* Subtle rounded corners */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.hero-section h1 {
+    font-size: 48px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.hero-section p {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 30px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-button {
+    background-color: #007bff; /* Blue button color */
+    color: #fff;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+}
+
+.cta-button:hover {
+    background-color: #0056b3;
+}
+
+.cta-button .arrow-icon {
+    margin-left: 10px;
+    font-size: 20px;
+    line-height: 1; /* Align vertically */
+}
+
+/* Placeholder Section (for the image/video area) */
+.placeholder-section {
+    padding: 50px 0;
+    text-align: center;
+}
+
+.placeholder-box {
+    width: 100%;
+    max-width: 1200px; /* Matches the content width of the image */
+    height: 600px; /* Adjust height as needed to match the image proportions */
+    background-color: #e0e0e0; /* Gray placeholder color */
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    color: #888;
+    margin: 0 auto;
+}
+
+/* Features Section */
+.features-section {
+     background-color: #e3f2fd;
+    padding: 80px 0;
+    text-align: center;
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.03); /* Subtle shadow for section separation */
+}
+
+.features-section h2 {
+    font-size: 36px;
+    color: #333;
+    margin-bottom: 50px;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.feature-item {
+    background-color: #fefefe;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-5px);
+}
+
+.feature-item img {
+    width: 60px; /* Adjust icon size */
+    height: 60px;
+    margin-bottom: 20px;
+    /* You'll need to replace these with actual SVG or PNG icons */
+}
+
+.feature-item h3 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.feature-item p {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Footer */
+footer {
+    background-color: #333;
+    color: #fff;
+    padding: 30px 0;
+    text-align: center;
+    font-size: 14px;
+}
+
+footer .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+footer .footer-links {
+    margin-top: 15px;
+}
+
+footer .footer-links a {
+    color: #bbb;
+    text-decoration: none;
+    margin: 0 15px;
+    transition: color 0.3s ease;
+}
+
+footer .footer-links a:hover {
+    color: #fff;
+}

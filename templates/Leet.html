@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daily LeetCode Questions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e6f2ff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            margin-top: 50px;
+            width: 90%;
+            max-width: 600px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h2, h3 {
+            text-align: center;
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: box-shadow 0.2s;
+        }
+
+        li:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        a {
+            color: #2980b9;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        form {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        input[type="email"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            width: 60%;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #3498db;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>📅 Today's LeetCode Questions</h2>
+        <ul id="question-list">
+            <!-- Questions will be loaded here -->
+        </ul>
+
+        <h3>📬 Email Today's LeetCode Questions</h3>
+        <form id="emailForm">
+            <input type="email" name="email" placeholder="Enter your email" required />
+            <button type="submit">Send to Email</button> 
+        </form>
+    </div> 
+
+    <script>
+        let currentQuestions = [];
+
+        function fetchQuestions() {
+            fetch(`/api/daily?offset=0`)
+                .then(res => res.json())
+                .then(data => {
+                    const list = document.getElementById("question-list");
+                    list.innerHTML = "";
+                    currentQuestions = data.daily_questions;
+
+                    currentQuestions.forEach(q => {
+                        const li = document.createElement("li");
+                        li.innerHTML = `<strong>${q.difficulty}</strong><a href="${q.link}" target="_blank">${q.title}</a>`;
+                        list.appendChild(li);
+                    });
+                });
+        }
+
+        document.getElementById("emailForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const email = this.email.value;
+
+            fetch("/send-daily-questions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, questions: currentQuestions })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message || data.error);
+            })
+            .catch(err => alert("Failed to send email."));
+        });
+
+        // Load questions on page load
+        fetchQuestions();
+    </script>
+</body> 
+</html>

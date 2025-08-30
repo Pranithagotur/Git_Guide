@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Coding Profiles</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold text-center mb-6 text-blue-700">Coding Profiles Overview</h1>
+
+    <!-- Input Section -->
+    <div class="mb-6 flex flex-wrap justify-center gap-4">
+      <input id="leetcodeUsername" type="text" placeholder="LeetCode Username" class="border p-2 rounded" />
+      <input id="codeforcesUsername" type="text" placeholder="Codeforces Username" class="border p-2 rounded" />
+      <input id="codechefUsername" type="text" placeholder="CodeChef Username" class="border p-2 rounded" />
+      <button onclick="loadProfiles()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Load Profiles</button>
+    </div>
+
+    <!-- Overall Score -->
+    <div class="mb-8 text-center">
+      <h2 class="text-xl font-semibold mb-2 text-gray-700">Overall Score</h2>
+      <div class="w-full max-w-md mx-auto bg-white p-4 rounded-xl shadow">
+        <div class="text-3xl font-bold text-green-600" id="overallScore">0 / 300</div>
+        <div class="w-full bg-gray-200 rounded-full h-4 mt-2">
+          <div id="overallProgress" class="bg-green-500 h-4 rounded-full w-0 transition-all duration-500"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Sections -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- LeetCode -->
+      <div class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold mb-4 text-orange-600">LeetCode Profile</h2>
+        <div id="leetcodeSection" class="text-gray-800 space-y-2">
+          <p>Enter username and click "Load Profiles"</p>
+        </div>
+      </div>
+
+      <!-- Codeforces -->
+      <div class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold mb-4 text-purple-600">Codeforces Profile</h2>
+        <div id="codeforcesSection" class="text-gray-800 space-y-2">
+          <p>Enter username and click "Load Profiles"</p>
+        </div>
+      </div>
+
+      <!-- CodeChef -->
+      <div class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold mb-4 text-red-600">CodeChef Profile</h2>
+        <div id="codechefSection" class="text-gray-800 space-y-2">
+          <p>Enter username and click "Load Profiles"</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function loadProfiles() {
+      const lcUser = document.getElementById('leetcodeUsername').value.trim();
+      const cfUser = document.getElementById('codeforcesUsername').value.trim();
+      const ccUser = document.getElementById('codechefUsername').value.trim();
+
+      const lcSection = document.getElementById('leetcodeSection');
+      const cfSection = document.getElementById('codeforcesSection');
+      const ccSection = document.getElementById('codechefSection');
+
+      const scoreText = document.getElementById('overallScore');
+      const scoreBar = document.getElementById('overallProgress');
+
+      let leetcodeScore = 0;
+      let codeforcesScore = 0;
+      let codechefScore = 0;
+
+      // Reset display
+      lcSection.innerHTML = 'Loading...';
+      cfSection.innerHTML = 'Loading...';
+      ccSection.innerHTML = 'Loading...';
+      scoreText.textContent = 'Loading...';
+      scoreBar.style.width = '0%';
+
+      // LeetCode
+      try {
+        const res = await fetch(`/api/leetcode?username=${lcUser}`);
+        const data = await res.json();
+        if (data.error) {
+          lcSection.innerHTML = `<p class="text-red-500">${data.error}</p>`;
+        } else {
+          leetcodeScore = data.score;
+          lcSection.innerHTML = `
+            <img src="${data.avatar}" class="w-20 h-20 rounded-full mb-2">
+            <p><strong>Name:</strong> ${data.realName || data.username}</p>
+            <p><strong>Ranking:</strong> ${data.ranking}</p>
+            <p><strong>Solved:</strong> Easy ${data.solved.easy}, Medium ${data.solved.medium}, Hard ${data.solved.hard}</p>
+            <p><strong>Score:</strong> ${data.score}/100</p>
+            <p><strong>Recommendation:</strong> ${data.ai_recommendation}</p>
+            <p><strong>Recent Submissions:</strong></p>
+            <ul class="list-disc ml-6">
+              ${data.recent.map(sub => `<li>${sub.title}</li>`).join('')}
+            </ul>
+          `;
+        }
+      } catch {
+        lcSection.innerHTML = `<p class="text-red-500">Error loading LeetCode data.</p>`;
+      }
+
+      // Codeforces
+      try {
+        const res = await fetch(`/api/profile?username=${cfUser}`);
+        const data = await res.json();
+        if (data.error) {
+          cfSection.innerHTML = `<p class="text-red-500">${data.error}</p>`;
+        } else {
+          codeforcesScore = Math.min(Math.floor(data.rating / 40), 100);
+          cfSection.innerHTML = `
+            <p><strong>Handle:</strong> ${data.handle}</p>
+            <p><strong>Current Rank:</strong> ${data.rank}</p>
+            <p><strong>Rating:</strong> ${data.rating}</p>
+            <p><strong>Max Rank:</strong> ${data.maxRank}</p>
+            <p><strong>Total Solved:</strong> ${data.totalSolved}</p>
+            <p><strong>Recommendation:</strong> ${data.recommendations.join(", ")}</p>
+            <p><strong>Recent Contests:</strong></p>
+            <ul class="list-disc ml-6">
+              ${data.recentContests.map(c => `<li>${c.name} - Rank: ${c.rank}</li>`).join('')}
+            </ul>
+          `;
+        }
+      } catch {
+        cfSection.innerHTML = `<p class="text-red-500">Error loading Codeforces data.</p>`;
+      }
+
+      // CodeChef
+      try {
+        const res = await fetch(`/api/codechef?username=${ccUser}`);
+        const data = await res.json();
+        if (data.error) {
+          ccSection.innerHTML = `<p class="text-red-500">${data.error}</p>`;
+        } else {
+          codechefScore = Math.min(parseInt(data.rating) / 10, 100);
+          ccSection.innerHTML = `
+            <p><strong>Username:</strong> ${data.username}</p>
+            <p><strong>Rating:</strong> ${data.rating}</p>
+            <p><strong>Stars:</strong> ${data.stars}</p>
+            <p><strong>Total Solved:</strong> ${data.solved}</p>
+            <p><strong>Score:</strong> ${Math.floor(codechefScore)}/100</p>
+          `;
+        }
+      } catch {
+        ccSection.innerHTML = `<p class="text-red-500">Error loading CodeChef data.</p>`;
+      }
+
+      // Update final score
+      const totalScore = leetcodeScore + codeforcesScore + codechefScore;
+      scoreText.textContent = `${totalScore} / 300`;
+      scoreBar.style.width = `${(totalScore / 300) * 100}%`;
+    }
+
+    window.onload = () => {
+      const lc = document.getElementById('leetcodeUsername').value;
+      const cf = document.getElementById('codeforcesUsername').value;
+      const cc = document.getElementById('codechefUsername').value;
+      if (lc || cf || cc) loadProfiles();
+    };
+  </script>
+</body>
+</html>

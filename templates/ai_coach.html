@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Coach – GitGrade</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-blue-50">
+  <div class="p-6">
+    <h1 class="text-3xl font-bold text-blue-700 mb-4">👩‍💻 AI Coach</h1>
+    <p class="mb-6 text-gray-700">Smart suggestions to improve your coding profile and boost your placement readiness.</p>
+
+    <!-- Scores -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div class="bg-white shadow rounded p-4">
+        <h2 class="text-lg font-semibold">GitHub Score</h2>
+        <p id="github-score" class="text-2xl text-purple-600">--</p>
+      </div>
+      <div class="bg-white shadow rounded p-4">
+        <h2 class="text-lg font-semibold">LeetCode Score</h2>
+        <p id="leetcode-score" class="text-2xl text-green-600">--</p>
+      </div>
+      <div class="bg-white shadow rounded p-4">
+        <h2 class="text-lg font-semibold">HackerRank Score</h2>
+        <p id="hackerrank-score" class="text-2xl text-yellow-600">--</p>
+      </div>
+    </div>
+
+    <!-- Placement Readiness -->
+    <div class="bg-white shadow rounded p-4 mb-6">
+      <h2 class="text-xl font-bold text-blue-600">🎯 Predicted Placement Readiness</h2>
+      <p id="readiness" class="text-3xl font-bold text-blue-700 mt-2">--%</p>
+    </div>
+
+    <!-- Suggestions -->
+    <div class="bg-white shadow rounded p-4 mb-6">
+      <h2 class="text-xl font-semibold text-gray-800">💡 Personalized AI Suggestions</h2>
+      <pre id="suggestions" class="mt-2 text-gray-700 whitespace-pre-line">Loading...</pre>
+    </div>
+
+    <!-- Learning Plan -->
+    <div class="bg-white shadow rounded p-4 mb-6">
+      <h2 class="text-xl font-semibold text-gray-800">📘 4-Week Learning Plan</h2>
+      <pre id="learningPlan" class="mt-2 text-gray-700 whitespace-pre-line">Loading...</pre>
+    </div>
+
+    <!-- Download Button -->
+    <a href="/api/export-report" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+      📄 Download Report (PDF)
+    </a>
+  </div>
+
+  <script>
+    async function loadCoachData() {
+      const aiRes = await fetch('/api/ai_coach');
+      const aiData = await aiRes.json();
+
+      document.getElementById("github-score").innerText = aiData.github + "/100";
+      document.getElementById("leetcode-score").innerText = aiData.leetcode + "/100";
+      document.getElementById("hackerrank-score").innerText = aiData.hackerrank + "/100";
+      document.getElementById("readiness").innerText = aiData.readiness + "%";
+      document.getElementById("suggestions").innerText = aiData.suggestions;
+
+      speechSynthesis.speak(new SpeechSynthesisUtterance(aiData.suggestions));
+    }
+
+    async function loadLearningPlan() {
+      const planRes = await fetch('/api/learning-plan');
+      const planData = await planRes.json();
+      document.getElementById("learningPlan").innerText = planData.plan;
+    }
+
+    window.onload = () => {
+      loadCoachData();
+      loadLearningPlan();
+    };
+  </script>
+</body>
+</html>
