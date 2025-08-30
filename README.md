@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🚀 Git_Guide  
 
 Git_Guide is an AI-powered platform that evaluates your **LeetCode** and **GitHub** performance daily.  
@@ -50,3 +51,6 @@ It provides personalized **AI recommendations**, **daily practice questions**, a
 ```bash
 git clone https://github.com/Pranithagotur/Git_Guide.git
 cd Git_Guide
+=======
+"# Git Guide" 
+>>>>>>> 35352b7 (Added screenshots and updated README)
