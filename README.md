@@ -16,9 +16,9 @@ It provides personalized **AI recommendations**, **daily practice questions**, a
 ---
 
 ## 🖥️ Tech Stack
-- **Frontend:** HTML, CSS, JavaScript  
+- **Frontend:** HTML, CSS, JavaScript
 - **Backend:** Python / Flask 
-- **Database:** MySQL / SQLite  
+- **Database:** MySQL
 - **AI/ML:** OpenAI API 
 
 ---
